@@ -4,13 +4,10 @@ import {
 	InternalServerErrorException,
 	NotFoundException,
 } from '@nestjs/common'
-import { initializeApp } from 'firebase/app'
 import {
-	addDoc,
 	collection,
 	deleteDoc,
 	doc,
-	Firestore,
 	getDoc,
 	getDocs,
 	getFirestore,
@@ -19,21 +16,17 @@ import {
 	setDoc,
 	where,
 } from 'firebase/firestore'
-import { appConfig } from 'src/config'
+import { db } from 'src/main'
 import {
 	AddCustomerRequest,
 	GetCustomerRequest,
 	UpdateCustomerRequest,
 } from './customers.controller'
 
-const firebase = initializeApp(appConfig.firebase)
-
 @Injectable()
 export class CustomersService {
-	private db = getFirestore(firebase)
-
 	async searchCustomer({ email, birthday, primaryPhone }: GetCustomerRequest) {
-		const customersRef = collection(this.db, 'customers')
+		const customersRef = collection(db, 'customers')
 
 		const queries: QueryConstraint[] = []
 		if (email) {
@@ -56,7 +49,7 @@ export class CustomersService {
 
 	async findCustomerById(id: string) {
 		try {
-			const result = await getDoc(doc(this.db, 'customers', id))
+			const result = await getDoc(doc(db, 'customers', id))
 			const data = result.data()
 
 			return data
@@ -77,7 +70,7 @@ export class CustomersService {
 		}
 
 		try {
-			await setDoc(doc(this.db, 'customers', id), {
+			await setDoc(doc(db, 'customers', id), {
 				email,
 				birthday,
 				primaryPhone,
@@ -101,7 +94,7 @@ export class CustomersService {
 		}
 
 		try {
-			await setDoc(doc(this.db, 'customers', id), {
+			await setDoc(doc(db, 'customers', id), {
 				...existCustomer,
 				email,
 				birthday,
@@ -121,9 +114,9 @@ export class CustomersService {
 		if (!existCustomer) {
 			throw new NotFoundException('Customer is not found')
 		}
-        
+
 		try {
-			await deleteDoc(doc(this.db, 'customers', id))
+			await deleteDoc(doc(db, 'customers', id))
 			console.log('Document deleted with ID: ', id)
 			return id
 		} catch (e) {

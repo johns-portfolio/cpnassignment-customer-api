@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common'
 import { CustomersService } from './customers.service'
 
-@Controller('/v1/customers')
+@Controller('v1/customers')
 export class CustomersController {
 	constructor(private readonly customerService: CustomersService) {}
 
@@ -53,21 +53,16 @@ export class CustomersController {
 	}
 }
 
-export type GetCustomerRequest = {
+export interface Customer {
 	email: string
 	birthday: string
 	primaryPhone: string
 }
 
-export type AddCustomerRequest = {
+export interface GetCustomerRequest extends Customer {}
+
+export interface AddCustomerRequest extends Customer {
 	username: string
-	email: string
-	birthday: string
-	primaryPhone: string
 }
 
-export type UpdateCustomerRequest = {
-	email: string
-	birthday: string
-	primaryPhone: string
-}
+export interface UpdateCustomerRequest extends Customer {}
