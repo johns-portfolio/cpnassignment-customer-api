@@ -1,0 +1,17 @@
+version: '3.9'
+services:
+  customer-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - '3000:3000'
+    environment:
+      CHOKIDAR_USEPOLLING: true
+      PORT: ${PORT}
+      FIREBASE_APP_ID: ${FIREBASE_APP_ID}
+      FIREBASE_PROJECT_ID: ${FIREBASE_PROJECT_ID}
+      FIREBASE_API_KEY: ${FIREBASE_API_KEY}
