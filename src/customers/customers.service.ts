@@ -16,16 +16,27 @@ import {
 	setDoc,
 	where,
 } from 'firebase/firestore'
-import { db } from 'src/main'
 import {
 	AddCustomerRequest,
+	Customer,
 	GetCustomerRequest,
 	UpdateCustomerRequest,
 } from './customers.controller'
+import { initializeApp } from 'firebase/app'
+import { appConfig } from '../config'
+
+const firebase = initializeApp(appConfig.firebase)
+const db = getFirestore(firebase)
 
 @Injectable()
 export class CustomersService {
-	async searchCustomer({ email, birthday, primaryPhone }: GetCustomerRequest) {
+	async searchCustomer({
+		email,
+		birthday,
+		primaryPhone,
+	}: GetCustomerRequest): Promise<{
+		[key: string]: Customer
+	}> {
 		const customersRef = collection(db, 'customers')
 
 		const queries: QueryConstraint[] = []

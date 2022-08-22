@@ -17,11 +17,15 @@ import {
 	setDoc,
 	where,
 } from 'firebase/firestore'
-import { db } from 'src/main'
 import {
 	AddAddressesRequest,
 	UpdateAddressesRequest,
 } from './addresses.controller'
+import { appConfig } from '../config'
+import { initializeApp } from 'firebase/app'
+
+const firebase = initializeApp(appConfig.firebase)
+const db = getFirestore(firebase)
 
 const customerAddressesCol = 'customer-addresses'
 const addressesCol = 'addresses'
@@ -33,7 +37,7 @@ export class AddressesService {
 			const customerAddressesDocRef = doc(db, customerAddressesCol, username)
 			const addressesColRef = collection(customerAddressesDocRef, addressesCol)
 			const querySnapshot = await getDocs(query(addressesColRef))
-            
+
 			const result = {}
 			querySnapshot.forEach((doc) => {
 				result[doc.id] = doc.data()

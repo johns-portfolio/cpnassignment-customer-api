@@ -1,18 +1,41 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { CustomersController } from './customers.controller';
+import { Test, TestingModule } from '@nestjs/testing'
+import { toPromise } from 'src/utils'
+import { CustomersController } from './customers.controller'
+import { CustomersService } from './customers.service'
 
 describe('CustomersController', () => {
-  let controller: CustomersController;
+	let customerController: CustomersController
+	let customerService: CustomersService
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [CustomersController],
-    }).compile();
+	beforeEach(async () => {
+		const app: TestingModule = await Test.createTestingModule({
+			controllers: [CustomersController],
+			providers: [CustomersService]
+		}).compile()
 
-    controller = module.get<CustomersController>(CustomersController);
-  });
+		customerController = app.get(CustomersController)
+		customerService = app.get(CustomersService)
+	})
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
-});
+	describe('getCustomer', () => {
+		it('should return an object of customer', async () => {
+			// Arrange
+			const data = {
+				john: {
+					email: '',
+					birthday: '',
+					primaryPhone: '',
+				},
+			}
+			jest
+				.spyOn(customerService, 'searchCustomer')
+				.mockImplementation((body) => toPromise(data))
+
+			// Act
+			const result = await customerController.getCustomer({})
+
+			// Assert
+			expect(result).toBe(data)
+		})
+	})
+})

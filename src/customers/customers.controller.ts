@@ -54,9 +54,9 @@ export class CustomersController {
 }
 
 export interface Customer {
-	email: string
-	birthday: string
-	primaryPhone: string
+	email?: string
+	birthday?: string
+	primaryPhone?: string
 }
 
 export interface GetCustomerRequest extends Customer {}
