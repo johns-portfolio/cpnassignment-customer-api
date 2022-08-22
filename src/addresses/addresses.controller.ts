@@ -1,5 +1,6 @@
 import {
 	Body,
+	CacheTTL,
 	Controller,
 	Delete,
 	Get,
@@ -17,6 +18,7 @@ export class AddressesController {
 	constructor(private readonly addressesService: AddressesService) {}
 
 	@Get(':username')
+	@CacheTTL(3600)
 	async findAddressesByUsername(@Param('username') username: string) {
 		const data = await this.addressesService.getAddressesByUsername(username)
 
@@ -41,7 +43,11 @@ export class AddressesController {
 		@Param('addressId') addressId: string,
 		@Body() address: UpdateAddressesRequest,
 	) {
-		const result = await this.addressesService.updateAddress(username, addressId, address)
+		const result = await this.addressesService.updateAddress(
+			username,
+			addressId,
+			address,
+		)
 		return { id: result }
 	}
 
